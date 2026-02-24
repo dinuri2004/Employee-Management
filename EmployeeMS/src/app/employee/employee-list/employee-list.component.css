@@ -1,0 +1,14 @@
+.container {
+  background-color: #e3f2fd;
+  min-height: 100vh;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.table {
+  background-color: white;
+}
+
+.alert {
+  background-color: rgba(255, 255, 255, 0.9);
+}
