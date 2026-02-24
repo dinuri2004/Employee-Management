@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Edit Employee' : 'Add New Employee' }}</h2>
+  
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="mt-4">
+    <div class="mb-3">
+      <label for="firstName" class="form-label">First Name</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="firstName" 
+        formControlName="firstName"
+        [class.is-invalid]="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
+        <span *ngIf="employeeForm.get('firstName')?.errors?.['required']">First name is required</span>
+        <span *ngIf="employeeForm.get('firstName')?.errors?.['minlength']">First name must be at least 2 characters</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="lastName" 
+        formControlName="lastName"
+        [class.is-invalid]="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
+        <span *ngIf="employeeForm.get('lastName')?.errors?.['required']">Last name is required</span>
+        <span *ngIf="employeeForm.get('lastName')?.errors?.['minlength']">Last name must be at least 2 characters</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input 
+        type="email" 
+        class="form-control" 
+        id="email" 
+        formControlName="email"
+        [class.is-invalid]="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
+        <span *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required</span>
+        <span *ngIf="employeeForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary me-2">{{ isEditMode ? 'Update' : 'Add' }} Employee</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>
