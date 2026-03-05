@@ -6,14 +6,11 @@
     </button>
   </div>
 
-  <!-- Debug Info -->
-  <div class="alert alert-info mb-3">
-    <strong>Debug:</strong> Total Employees: {{ employees.length }} | DataSource Length: {{ dataSource.data.length }}
-  </div>
+  
 
   <!-- Simple Table for Debugging -->
   <div *ngIf="employees.length > 0" class="mb-4">
-    <h4>Simple Table (Debug)</h4>
+    <h4>Employee Details</h4>
     <table class="table table-bordered">
       <thead>
         <tr>
