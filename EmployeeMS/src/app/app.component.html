@@ -1,13 +1,19 @@
 <div class="container-fluid">
-  <nav class="navbar navbar-dark bg-primary mb-4">
+  <nav class="navbar navbar-dark bg-primary mb-4" *ngIf="currentUser">
     <div class="container">
       <span class="navbar-brand mb-0 h1">
         <i class="bi bi-building"></i> Employee Management System
       </span>
+      <div class="user-info">
+        <span class="user-name">Welcome, {{ currentUser.username }}</span>
+        <button class="btn btn-outline-light btn-sm ms-3" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
     </div>
   </nav>
   
-  <div class="container">
+  <div [ngClass]="currentUser ? 'container' : ''">
     <router-outlet></router-outlet>
   </div>
 </div>

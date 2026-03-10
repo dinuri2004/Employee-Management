@@ -24,9 +24,11 @@ export class EmployeeForm implements OnInit {
     private router: Router
   ) {
     this.employeeForm = this.fb.group({
+      id: ['', [Validators.required, Validators.min(1)]],
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 
@@ -36,6 +38,8 @@ export class EmployeeForm implements OnInit {
       this.isEditMode = true;
       this.employeeId = +id;
       this.loadEmployee(this.employeeId);
+      // Disable ID field in edit mode
+      this.employeeForm.get('id')?.disable();
     }
   }
 
@@ -52,8 +56,9 @@ export class EmployeeForm implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.employeeForm.valid) {
-      const employee: Employee = this.employeeForm.value;
+    if (this.employeeForm.valid || (this.isEditMode && this.employeeForm.get('id')?.disabled)) {
+      // Use getRawValue() to include disabled fields
+      const employee: Employee = this.employeeForm.getRawValue();
       
       if (this.isEditMode && this.employeeId) {
         this.employeeService.updateEmployee(this.employeeId, employee).subscribe({

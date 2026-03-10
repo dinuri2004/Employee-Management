@@ -3,6 +3,22 @@
   
   <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="mt-4">
     <div class="mb-3">
+      <label for="id" class="form-label">Employee ID</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        id="id" 
+        formControlName="id"
+        placeholder="Enter employee ID"
+        [class.is-invalid]="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched">
+      <div class="invalid-feedback" *ngIf="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched">
+        <span *ngIf="employeeForm.get('id')?.errors?.['required']">Employee ID is required</span>
+        <span *ngIf="employeeForm.get('id')?.errors?.['min']">Employee ID must be at least 1</span>
+      </div>
+      <small class="form-text text-muted" *ngIf="isEditMode">ID cannot be changed in edit mode</small>
+    </div>
+
+    <div class="mb-3">
       <label for="firstName" class="form-label">First Name</label>
       <input 
         type="text" 
@@ -41,6 +57,21 @@
       <div class="invalid-feedback" *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
         <span *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required</span>
         <span *ngIf="employeeForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="address" class="form-label">Address</label>
+      <textarea 
+        class="form-control" 
+        id="address" 
+        formControlName="address"
+        rows="3"
+        [class.is-invalid]="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched">
+      </textarea>
+      <div class="invalid-feedback" *ngIf="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched">
+        <span *ngIf="employeeForm.get('address')?.errors?.['required']">Address is required</span>
+        <span *ngIf="employeeForm.get('address')?.errors?.['minlength']">Address must be at least 5 characters</span>
       </div>
     </div>
 

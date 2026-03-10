@@ -28,7 +28,7 @@ import { Employee } from '../employee.model';
 export class EmployeeListComponent implements OnInit {
 
   // ✅ Used by mat-table
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'actions'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'address', 'actions'];
   dataSource = new MatTableDataSource<Employee>([]);
 
   employees: Employee[] = [];

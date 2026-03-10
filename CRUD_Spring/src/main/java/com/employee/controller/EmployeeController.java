@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +31,16 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAll() {
-        List<Employee> employees = repository.findAll();
-        System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees");
-        employees.forEach(e -> System.out.println("  - " + e.getId() + ": " + e.getFirstName() + " " + e.getLastName()));
+    public List<Employee> getAll(@RequestHeader(value = "X-Username", required = false) String username) {
+        List<Employee> employees;
+        if (username != null && !username.isEmpty()) {
+            employees = repository.findByCreatedBy(username);
+            System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees for user: " + username);
+        } else {
+            employees = repository.findAll();
+            System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees");
+        }
+        employees.forEach(e -> System.out.println("  - " + e.getId() + ": " + e.getFirstName() + " " + e.getLastName() + " (created by: " + e.getCreatedBy() + ")"));
         return employees;
     }
 
@@ -44,8 +51,11 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody Employee employee) {
-        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName());
+    public ResponseEntity<Employee> create(@RequestBody Employee employee, @RequestHeader(value = "X-Username", required = false) String username) {
+        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName() + " by user: " + username);
+        if (username != null && !username.isEmpty()) {
+            employee.setCreatedBy(username);
+        }
         Employee saved = repository.save(employee);
         System.out.println("  - Saved with ID: " + saved.getId());
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
@@ -58,6 +68,7 @@ public class EmployeeController {
                     existing.setFirstName(employee.getFirstName());
                     existing.setLastName(employee.getLastName());
                     existing.setEmail(employee.getEmail());
+                    existing.setAddress(employee.getAddress());
                     repository.save(existing);
                     return ResponseEntity.ok(existing);
                 })
