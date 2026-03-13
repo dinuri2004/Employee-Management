@@ -52,10 +52,10 @@ export class RegisterComponent {
       this.authService.register(username, email, password).subscribe({
         next: (response) => {
           if (response.success) {
-            this.successMessage = 'Registration successful! Redirecting...';
+            this.successMessage = 'Registration successful! Please sign in.';
             this.errorMessage = '';
             setTimeout(() => {
-              this.router.navigate(['/employees']);
+              this.router.navigate(['/login']);
             }, 1500);
           } else {
             this.errorMessage = response.message || 'Registration failed';
