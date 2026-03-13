@@ -12,3 +12,32 @@
 .alert {
   background-color: rgba(255, 255, 255, 0.9);
 }
+
+.search-wrapper {
+  max-width: 420px;
+}
+
+.input-group-text {
+  background-color: #fff;
+  border-right: 0;
+  display: flex;
+  align-items: center;
+}
+
+.input-group .form-control {
+  border-left: 0;
+}
+
+.search-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+.search-highlight td,
+.search-highlight .mat-mdc-cell,
+.search-highlight .mat-cell {
+  background-color: #fff7cc !important;
+}

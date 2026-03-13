@@ -32,8 +32,10 @@ export class EmployeeListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'address', 'actions'];
   dataSource = new MatTableDataSource<Employee>([]);
   username = '';
+  searchTerm = '';
 
   employees: Employee[] = [];
+  filteredEmployees: Employee[] = [];
 
   constructor(
     private empService: EmployeeService,
@@ -53,7 +55,7 @@ export class EmployeeListComponent implements OnInit {
         console.log('Received data:', data);
         console.log('Data length:', data.length);
         this.employees = data;
-        this.dataSource.data = data;
+        this.applySearch();
         console.log('DataSource updated:', this.dataSource.data);
       },
       error: (err) => {
@@ -61,6 +63,41 @@ export class EmployeeListComponent implements OnInit {
         alert('Failed to load employees. Make sure the Spring Boot backend is running.');
       }
     });
+  }
+
+  onSearchChange(): void {
+    this.applySearch();
+  }
+
+  isRowHighlighted(emp: Employee): boolean {
+    const query = this.searchTerm.trim().toLowerCase();
+    if (!query) {
+      return false;
+    }
+
+    const idText = String(emp.id ?? '').toLowerCase();
+    const firstName = (emp.firstName ?? '').toLowerCase();
+    const lastName = (emp.lastName ?? '').toLowerCase();
+    return idText.includes(query) || firstName.includes(query) || lastName.includes(query);
+  }
+
+  private applySearch(): void {
+    const query = this.searchTerm.trim().toLowerCase();
+
+    if (!query) {
+      this.filteredEmployees = [...this.employees];
+      this.dataSource.data = [...this.employees];
+      return;
+    }
+
+    this.filteredEmployees = this.employees.filter((emp) => {
+      const idText = String(emp.id ?? '').toLowerCase();
+      const firstName = (emp.firstName ?? '').toLowerCase();
+      const lastName = (emp.lastName ?? '').toLowerCase();
+      return idText.includes(query) || firstName.includes(query) || lastName.includes(query);
+    });
+
+    this.dataSource.data = [...this.filteredEmployees];
   }
 
   addEmployee(): void {
