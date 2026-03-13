@@ -10,6 +10,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { EmployeeService } from '../employee.service';
 import { Employee } from '../employee.model';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -30,15 +31,18 @@ export class EmployeeListComponent implements OnInit {
   // ✅ Used by mat-table
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'address', 'actions'];
   dataSource = new MatTableDataSource<Employee>([]);
+  username = '';
 
   employees: Employee[] = [];
 
   constructor(
     private empService: EmployeeService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.username = this.authService.currentUserValue?.username || 'User';
     this.loadEmployees();
   }
 
