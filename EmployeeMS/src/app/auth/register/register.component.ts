@@ -49,16 +49,25 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       const { username, email, password } = this.registerForm.value;
       
-      if (this.authService.register(username, email, password)) {
-        this.successMessage = 'Registration successful! Redirecting...';
-        this.errorMessage = '';
-        setTimeout(() => {
-          this.router.navigate(['/employees']);
-        }, 1500);
-      } else {
-        this.errorMessage = 'Username or email already exists';
-        this.successMessage = '';
-      }
+      this.authService.register(username, email, password).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.successMessage = 'Registration successful! Redirecting...';
+            this.errorMessage = '';
+            setTimeout(() => {
+              this.router.navigate(['/employees']);
+            }, 1500);
+          } else {
+            this.errorMessage = response.message || 'Registration failed';
+            this.successMessage = '';
+          }
+        },
+        error: (error) => {
+          this.errorMessage = error.error?.message || 'Username or email already exists';
+          this.successMessage = '';
+          console.error('Registration error:', error);
+        }
+      });
     } else {
       Object.keys(this.registerForm.controls).forEach(key => {
         this.registerForm.get(key)?.markAsTouched();

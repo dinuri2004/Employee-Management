@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:8080/api/employees'; // Spring Boot backend API
+  private apiUrl = 'http://localhost:8081/api/employees'; // Spring Boot backend API
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 

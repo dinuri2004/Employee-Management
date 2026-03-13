@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap, timeout } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface User {
@@ -7,14 +8,26 @@ export interface User {
   email: string;
 }
 
+interface AuthResponse {
+  success: boolean;
+  message: string;
+  user?: User;
+}
+
+interface PasswordResetResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private apiUrl = 'http://localhost:8081/api/auth';
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
-  constructor(private router: Router) {
+  constructor(private http: HttpClient, private router: Router) {
     const storedUser = localStorage.getItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<User | null>(
       storedUser ? JSON.parse(storedUser) : null
@@ -26,40 +39,28 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string): boolean {
-    // In a real application, you would validate against a backend API
-    // For demo purposes, we'll use simple validation
-    const storedUsers = this.getStoredUsers();
-    const user = storedUsers.find(u => u.username === username && u.password === password);
-
-    if (user) {
-      const userInfo: User = { username: user.username, email: user.email };
-      localStorage.setItem('currentUser', JSON.stringify(userInfo));
-      this.currentUserSubject.next(userInfo);
-      return true;
-    }
-    return false;
+  login(username: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { username, password })
+      .pipe(
+        tap(response => {
+          if (response.success && response.user) {
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            this.currentUserSubject.next(response.user);
+          }
+        })
+      );
   }
 
-  register(username: string, email: string, password: string): boolean {
-    // Check if user already exists
-    const storedUsers = this.getStoredUsers();
-    const existingUser = storedUsers.find(u => u.username === username || u.email === email);
-
-    if (existingUser) {
-      return false; // User already exists
-    }
-
-    // Store new user
-    const newUser = { username, email, password };
-    storedUsers.push(newUser);
-    localStorage.setItem('users', JSON.stringify(storedUsers));
-
-    // Auto-login after registration
-    const userInfo: User = { username, email };
-    localStorage.setItem('currentUser', JSON.stringify(userInfo));
-    this.currentUserSubject.next(userInfo);
-    return true;
+  register(username: string, email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, { username, email, password })
+      .pipe(
+        tap(response => {
+          if (response.success && response.user) {
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            this.currentUserSubject.next(response.user);
+          }
+        })
+      );
   }
 
   logout(): void {
@@ -72,8 +73,15 @@ export class AuthService {
     return this.currentUserValue !== null;
   }
 
-  private getStoredUsers(): any[] {
-    const users = localStorage.getItem('users');
-    return users ? JSON.parse(users) : [];
+  requestPasswordReset(email: string): Observable<PasswordResetResponse> {
+    return this.http
+      .post<PasswordResetResponse>(`${this.apiUrl}/forgot-password`, { email })
+      .pipe(timeout(15000));
+  }
+
+  resetPassword(token: string, password: string): Observable<PasswordResetResponse> {
+    return this.http
+      .post<PasswordResetResponse>(`${this.apiUrl}/reset-password`, { token, password })
+      .pipe(timeout(15000));
   }
 }

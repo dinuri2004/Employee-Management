@@ -40,11 +40,19 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
       
-      if (this.authService.login(username, password)) {
-        this.router.navigate([this.returnUrl]);
-      } else {
-        this.errorMessage = 'Invalid username or password';
-      }
+      this.authService.login(username, password).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.router.navigate([this.returnUrl]);
+          } else {
+            this.errorMessage = response.message || 'Invalid username or password';
+          }
+        },
+        error: (error) => {
+          this.errorMessage = error.error?.message || 'Invalid username or password';
+          console.error('Login error:', error);
+        }
+      });
     } else {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
