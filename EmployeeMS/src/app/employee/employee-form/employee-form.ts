@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +21,8 @@ export class EmployeeForm implements OnInit {
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.employeeForm = this.fb.group({
       id: ['', [Validators.required, Validators.min(1)]],
@@ -40,6 +41,19 @@ export class EmployeeForm implements OnInit {
       this.loadEmployee(this.employeeId);
       // Disable ID field in edit mode
       this.employeeForm.get('id')?.disable();
+    } else {
+      // Auto-suggest next available ID
+      this.employeeService.getEmployees().subscribe({
+        next: (employees) => {
+          const maxId = employees.reduce((max, e) => (e.id > max ? e.id : max), 100);
+          this.employeeForm.patchValue({ id: maxId + 1 });
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.employeeForm.patchValue({ id: 101 });
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -47,6 +61,7 @@ export class EmployeeForm implements OnInit {
     this.employeeService.getEmployee(id).subscribe({
       next: (employee) => {
         this.employeeForm.patchValue(employee);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading employee:', err);

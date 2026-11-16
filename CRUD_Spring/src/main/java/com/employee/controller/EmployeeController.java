@@ -31,17 +31,15 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAll(@RequestHeader(value = "X-Username", required = false) String username) {
-        List<Employee> employees;
-        if (username != null && !username.isEmpty() && !"admin".equalsIgnoreCase(username)) {
-            employees = repository.findByCreatedBy(username);
-            System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees for user: " + username);
-        } else {
-            employees = repository.findAll();
-            System.out.println("GET /api/employees - Retrieved " + employees.size() + " total employees (all/admin view)");
-        }
+    public ResponseEntity<List<Employee>> getAll(@RequestHeader(value = "X-Username", required = false) String username) {
+        List<Employee> employees = repository.findAll();
+        System.out.println("GET /api/employees - Retrieved " + employees.size() + " total employees (viewed by: " + username + ")");
         employees.forEach(e -> System.out.println("  - " + e.getId() + ": " + e.getFirstName() + " " + e.getLastName() + " (created by: " + e.getCreatedBy() + ")"));
-        return employees;
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                .header(org.springframework.http.HttpHeaders.PRAGMA, "no-cache")
+                .header(org.springframework.http.HttpHeaders.EXPIRES, "0")
+                .body(employees);
     }
 
     @GetMapping("/{id}")
@@ -52,9 +50,18 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Employee employee, @RequestHeader(value = "X-Username", required = false) String username) {
-        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName() + " (ID: " + employee.getId() + ") by user: " + username);
+        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName() + " by user: " + username);
         
-        if (employee.getId() != null && repository.existsById(employee.getId())) {
+        // Auto-assign ID if not provided or <= 0
+        if (employee.getId() == null || employee.getId() <= 0) {
+            Long nextId = repository.findAll().stream()
+                    .map(Employee::getId)
+                    .filter(java.util.Objects::nonNull)
+                    .max(Long::compareTo)
+                    .orElse(100L) + 1;
+            employee.setId(nextId);
+            System.out.println("  - Auto-assigned ID: " + nextId);
+        } else if (repository.existsById(employee.getId())) {
             System.out.println("  - Conflict: Employee ID " + employee.getId() + " already exists!");
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(java.util.Collections.singletonMap("message", "Employee ID " + employee.getId() + " already exists. Please choose a different ID."));

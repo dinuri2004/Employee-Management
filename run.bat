@@ -10,8 +10,12 @@ if "%ERRORLEVEL%"=="0" (
     echo [OK] MySQL is running.
 ) else (
     echo [INFO] MySQL is not running. Attempting to start from XAMPP...
-    if exist "C:\xampp\mysql\bin\mysqld.exe" (
-        start "" "C:\xampp\mysql\bin\mysqld.exe" --defaults-file="C:\xampp\mysql\bin\my.ini" --standalone
+    if exist "C:\xampp\mysql_start.bat" (
+        start "" /min cmd /c "cd /d C:\xampp && call mysql_start.bat"
+        timeout /t 3 /nobreak >nul
+        echo [OK] MySQL started.
+    ) else if exist "C:\xampp\mysql\bin\mysqld.exe" (
+        start "" /min cmd /c "cd /d C:\xampp && mysql\bin\mysqld --defaults-file=mysql\bin\my.ini --standalone"
         timeout /t 3 /nobreak >nul
         echo [OK] MySQL started.
     ) else (

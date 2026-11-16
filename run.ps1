@@ -5,9 +5,14 @@ Write-Host ""
 
 $mysqlRunning = Get-Process mysqld -ErrorAction SilentlyContinue
 if (-not $mysqlRunning) {
-    if (Test-Path "C:\xampp\mysql\bin\mysqld.exe") {
+    if (Test-Path "C:\xampp\mysql_start.bat") {
         Write-Host "[INFO] Starting MySQL from XAMPP..." -ForegroundColor Yellow
-        Start-Process "C:\xampp\mysql\bin\mysqld.exe" -ArgumentList "--defaults-file=C:\xampp\mysql\bin\my.ini --standalone" -WindowStyle Hidden
+        Start-Process "cmd.exe" -ArgumentList "/c cd /d C:\xampp && call mysql_start.bat" -WindowStyle Hidden
+        Start-Sleep -Seconds 3
+        Write-Host "[OK] MySQL started." -ForegroundColor Green
+    } elseif (Test-Path "C:\xampp\mysql\bin\mysqld.exe") {
+        Write-Host "[INFO] Starting MySQL from XAMPP..." -ForegroundColor Yellow
+        Start-Process "cmd.exe" -ArgumentList "/c cd /d C:\xampp && mysql\bin\mysqld --defaults-file=mysql\bin\my.ini --standalone" -WindowStyle Hidden
         Start-Sleep -Seconds 3
         Write-Host "[OK] MySQL started." -ForegroundColor Green
     } else {

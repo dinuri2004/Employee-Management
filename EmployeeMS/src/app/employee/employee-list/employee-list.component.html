@@ -62,138 +62,107 @@
       </div>
     </div>
 
-    <!-- Stat 4: System Status (Deep Navy) -->
+    <!-- Stat 4: Database Status -->
     <div class="staff-card stat-card border-navy">
       <div class="stat-icon-wrapper bg-navy-light text-navy">
-        <i class="bi bi-activity"></i>
+        <i class="bi bi-database-check"></i>
       </div>
       <div class="stat-body">
-        <span class="stat-label">System Health</span>
-        <div class="stat-value">99.9%</div>
+        <span class="stat-label">Database Sync</span>
+        <div class="stat-value text-base font-semibold">Active</div>
         <div class="stat-trend trend-navy">
-          <i class="bi bi-lightning-charge-fill"></i>
-          <span>Real-time database sync</span>
+          <i class="bi bi-check2-circle" style="color: #10B981;"></i>
+          <span>MySQL port 3306</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CHARTS & VISUALS SECTION (Blue, Teal, Purple) -->
-  <div class="charts-grid">
-    <!-- Chart 1: Performance & Monthly Distribution Bar Chart -->
+  <!-- DYNAMIC WORKFORCE ANALYTICS (When Employees Exist) -->
+  <div class="charts-grid" *ngIf="totalEmployees > 0">
+    <!-- Chart 1: Regional & Office Hub Distribution -->
     <div class="staff-card chart-card flex-2">
       <div class="chart-header">
         <div>
-          <h3 class="chart-title">Workforce Performance & Distribution</h3>
-          <p class="chart-subtitle">Monthly department activity across key business functions</p>
+          <h3 class="chart-title">Regional Workforce Distribution</h3>
+          <p class="chart-subtitle">Real-time team distribution across active office hubs and locations</p>
         </div>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot bg-royal-blue"></span> Engineering</span>
-          <span class="legend-item"><span class="legend-dot bg-teal"></span> Operations</span>
-          <span class="legend-item"><span class="legend-dot bg-purple"></span> Creative & Admin</span>
+          <span class="legend-item" *ngFor="let loc of locationDistribution; trackBy: trackByLoc">
+            <span class="legend-dot" [style.backgroundColor]="loc.color"></span>
+            {{ loc.name }} ({{ loc.count }})
+          </span>
         </div>
       </div>
 
-      <!-- Styled SVG Bar Visual -->
-      <div class="bar-chart-container">
-        <svg class="bar-chart-svg" viewBox="0 0 600 200" preserveAspectRatio="none">
-          <!-- Background Grid Lines -->
-          <line x1="0" y1="40" x2="600" y2="40" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
-          <line x1="0" y1="90" x2="600" y2="90" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
-          <line x1="0" y1="140" x2="600" y2="140" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
-          <line x1="0" y1="180" x2="600" y2="180" stroke="#CBD5E1" stroke-width="1.5" />
-
-          <!-- Month 1: Jan -->
-          <rect x="35" y="70" width="14" height="110" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="52" y="95" width="14" height="85" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="69" y="125" width="14" height="55" rx="4" fill="#8B5CF6" opacity="0.9" />
-
-          <!-- Month 2: Feb -->
-          <rect x="135" y="55" width="14" height="125" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="152" y="80" width="14" height="100" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="169" y="110" width="14" height="70" rx="4" fill="#8B5CF6" opacity="0.9" />
-
-          <!-- Month 3: Mar -->
-          <rect x="235" y="45" width="14" height="135" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="252" y="65" width="14" height="115" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="269" y="95" width="14" height="85" rx="4" fill="#8B5CF6" opacity="0.9" />
-
-          <!-- Month 4: Apr -->
-          <rect x="335" y="60" width="14" height="120" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="352" y="50" width="14" height="130" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="369" y="105" width="14" height="75" rx="4" fill="#8B5CF6" opacity="0.9" />
-
-          <!-- Month 5: May -->
-          <rect x="435" y="30" width="14" height="150" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="452" y="55" width="14" height="125" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="469" y="85" width="14" height="95" rx="4" fill="#8B5CF6" opacity="0.9" />
-
-          <!-- Month 6: Jun -->
-          <rect x="535" y="25" width="14" height="155" rx="4" fill="#2563EB" opacity="0.9" />
-          <rect x="552" y="45" width="14" height="135" rx="4" fill="#14B8A6" opacity="0.9" />
-          <rect x="569" y="75" width="14" height="105" rx="4" fill="#8B5CF6" opacity="0.9" />
-        </svg>
-        <div class="chart-x-labels">
-          <span>Jan</span>
-          <span>Feb</span>
-          <span>Mar</span>
-          <span>Apr</span>
-          <span>May</span>
-          <span>Jun</span>
+      <!-- Real Dynamic Distribution Bars -->
+      <div class="real-bars-container" style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px;">
+        <div class="location-bar-item" *ngFor="let loc of locationDistribution; trackBy: trackByLoc">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-weight: 600; color: #1E293B; font-size: 13px;">
+              <i class="bi bi-geo-alt-fill me-1" [style.color]="loc.color"></i>
+              {{ loc.name }}
+            </span>
+            <span style="color: #64748B; font-size: 12px; font-weight: 500;">
+              {{ loc.count }} staff member(s) &bull; {{ loc.percentage }}%
+            </span>
+          </div>
+          <div style="height: 10px; background-color: #F1F5F9; border-radius: 6px; overflow: hidden;">
+            <div style="height: 100%; border-radius: 6px; transition: width 0.4s ease;" 
+                 [style.width.%]="loc.percentage" 
+                 [style.backgroundColor]="loc.color">
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Chart 2: Donut Breakdown (Blue, Teal, Purple) -->
+    <!-- Chart 2: Summary Card -->
     <div class="staff-card chart-card flex-1">
       <div class="chart-header">
         <div>
-          <h3 class="chart-title">Team Composition</h3>
-          <p class="chart-subtitle">Workforce segment allocation</p>
+          <h3 class="chart-title">Workforce Summary</h3>
+          <p class="chart-subtitle">Real-time metrics</p>
         </div>
       </div>
 
-      <div class="donut-wrapper">
-        <svg class="donut-svg" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="58" fill="none" stroke="#F1F5F9" stroke-width="20" />
-          <!-- Engineering (48% -> stroke-dasharray="175 364") -->
-          <circle cx="80" cy="80" r="58" fill="none" stroke="#2563EB" stroke-width="20"
-                  stroke-dasharray="175 364" stroke-dashoffset="0" stroke-linecap="round" />
-          <!-- Operations (32% -> stroke-dasharray="116 364") -->
-          <circle cx="80" cy="80" r="58" fill="none" stroke="#14B8A6" stroke-width="20"
-                  stroke-dasharray="116 364" stroke-dashoffset="-185" stroke-linecap="round" />
-          <!-- Creative & Admin (20% -> stroke-dasharray="73 364") -->
-          <circle cx="80" cy="80" r="58" fill="none" stroke="#8B5CF6" stroke-width="20"
-                  stroke-dasharray="60 364" stroke-dashoffset="-305" stroke-linecap="round" />
-          
-          <text x="80" y="75" text-anchor="middle" font-size="20" font-weight="700" fill="#142B4A">{{ totalEmployees }}</text>
-          <text x="80" y="93" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Staff</text>
-        </svg>
-
-        <div class="donut-legend">
-          <div class="donut-legend-row">
-            <span class="d-flex align-items-center gap-2">
-              <span class="legend-dot bg-royal-blue"></span>
-              <span class="legend-text">Engineering</span>
-            </span>
-            <span class="legend-val">48%</span>
-          </div>
-          <div class="donut-legend-row">
-            <span class="d-flex align-items-center gap-2">
-              <span class="legend-dot bg-teal"></span>
-              <span class="legend-text">Operations</span>
-            </span>
-            <span class="legend-val">32%</span>
-          </div>
-          <div class="donut-legend-row">
-            <span class="d-flex align-items-center gap-2">
-              <span class="legend-dot bg-purple"></span>
-              <span class="legend-text">Creative & Admin</span>
-            </span>
-            <span class="legend-val">20%</span>
-          </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #F1F5F9;">
+          <span style="color: #64748B; font-size: 13px;"><i class="bi bi-people me-2" style="color: #2563EB;"></i>Total Records</span>
+          <span style="font-weight: 700; color: #142B4A; font-size: 15px;">{{ totalEmployees }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #F1F5F9;">
+          <span style="color: #64748B; font-size: 13px;"><i class="bi bi-building me-2" style="color: #14B8A6;"></i>Operating Locations</span>
+          <span style="font-weight: 700; color: #142B4A; font-size: 15px;">{{ uniqueLocations }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #64748B; font-size: 13px;"><i class="bi bi-shield-check me-2" style="color: #8B5CF6;"></i>System Health</span>
+          <span style="background-color: #ECFDF5; color: #059669; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">Live & Synced</span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- CLEAN ONBOARDING PANEL (When 0 Employees) -->
+  <div class="staff-card empty-welcome-panel" *ngIf="totalEmployees === 0" style="text-align: center; padding: 42px 24px; border: 2px dashed #E2E8F0; background: #FFFFFF;">
+    <div style="max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 68px; height: 68px; filter: drop-shadow(0 4px 10px rgba(37, 99, 235, 0.2));">
+        <circle cx="50" cy="50" r="46" fill="#0D1F36" stroke="#2563EB" stroke-width="2.5"/>
+        <path d="M 50 34 A 20 20 0 0 1 70 54" stroke="#2563EB" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M 68 66 A 20 20 0 0 1 32 66" stroke="#14B8A6" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M 30 54 A 20 20 0 0 1 50 34" stroke="#8B5CF6" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <circle cx="50" cy="24" r="6.5" fill="#2563EB"/>
+        <circle cx="70" cy="58" r="6.5" fill="#14B8A6"/>
+        <circle cx="30" cy="58" r="6.5" fill="#8B5CF6"/>
+      </svg>
+      <h3 style="color: #142B4A; font-size: 20px; font-weight: 700; margin: 0;">Welcome to StaffSphere</h3>
+      <p style="color: #64748B; font-size: 14px; margin: 0; line-height: 1.5;">
+        All mock data has been removed. Your workspace is completely clean and ready for real workforce records. Click below to add your first employee.
+      </p>
+      <button class="btn-teal" (click)="addEmployee()" style="margin-top: 4px;">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>Add Your First Employee</span>
+      </button>
     </div>
   </div>
 
@@ -252,7 +221,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let emp of filteredEmployees" [class.highlighted-row]="isRowHighlighted(emp)">
+          <tr *ngFor="let emp of filteredEmployees; trackBy: trackByEmp" [class.highlighted-row]="isRowHighlighted(emp)">
             <!-- Avatar & Name -->
             <td class="col-emp">
               <div class="emp-profile-cell">

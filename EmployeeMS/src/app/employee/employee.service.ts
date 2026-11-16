@@ -22,7 +22,7 @@ export class EmployeeService {
   }
 
   getEmployees(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(this.apiUrl, { headers: this.getHeaders() });
+    return this.http.get<Employee[]>(`${this.apiUrl}?_t=${Date.now()}`, { headers: this.getHeaders() });
   }
 
   getEmployee(id: number): Observable<Employee> {

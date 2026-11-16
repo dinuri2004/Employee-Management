@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +11,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { EmployeeService } from '../employee.service';
 import { Employee } from '../employee.model';
 import { AuthService } from '../../auth/auth.service';
+
+export interface LocationStat {
+  name: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
 
 @Component({
   selector: 'app-employee-list',
@@ -36,10 +43,16 @@ export class EmployeeListComponent implements OnInit {
   employees: Employee[] = [];
   filteredEmployees: Employee[] = [];
 
+  locationDistribution: LocationStat[] = [];
+  totalEmployeesCount = 0;
+  activePersonnelCount = 0;
+  uniqueLocationsCount = 0;
+
   constructor(
     private empService: EmployeeService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,31 +63,65 @@ export class EmployeeListComponent implements OnInit {
   loadEmployees(): void {
     this.empService.getEmployees().subscribe({
       next: (data) => {
-        this.employees = data;
+        this.employees = Array.isArray(data) ? data : [];
+        this.updateStats();
         this.applySearch();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading employees:', err);
+        this.cdr.detectChanges();
       }
     });
   }
 
+  private updateStats(): void {
+    const list = this.employees;
+    this.totalEmployeesCount = list.length;
+    this.activePersonnelCount = list.length;
+
+    if (!list.length) {
+      this.uniqueLocationsCount = 0;
+      this.locationDistribution = [];
+      return;
+    }
+
+    const counts: { [key: string]: number } = {};
+    for (const emp of list) {
+      const raw = (emp.address || 'Headquarters').split(',')[0].trim();
+      const loc = raw ? (raw.charAt(0).toUpperCase() + raw.slice(1)) : 'Headquarters';
+      counts[loc] = (counts[loc] || 0) + 1;
+    }
+
+    const colors = ['#2563EB', '#14B8A6', '#8B5CF6', '#142B4A', '#F59E0B', '#EC4899'];
+    const locNames = Object.keys(counts);
+    this.uniqueLocationsCount = locNames.length;
+    this.locationDistribution = locNames.map((key, i) => ({
+      name: key,
+      count: counts[key],
+      percentage: Math.round((counts[key] / list.length) * 100),
+      color: colors[i % colors.length]
+    }));
+  }
+
   get totalEmployees(): number {
-    return this.employees.length;
+    return this.totalEmployeesCount;
   }
 
   get activePersonnel(): number {
-    return this.employees.length;
+    return this.activePersonnelCount;
   }
 
   get uniqueLocations(): number {
-    if (!this.employees.length) return 0;
-    const locations = new Set(
-      this.employees
-        .map(e => (e.address || '').trim().toLowerCase())
-        .filter(addr => addr.length > 0)
-    );
-    return locations.size || 1;
+    return this.uniqueLocationsCount;
+  }
+
+  trackByEmp(index: number, item: Employee): number {
+    return item.id;
+  }
+
+  trackByLoc(index: number, item: LocationStat): string {
+    return item.name;
   }
 
   getInitials(firstName?: string, lastName?: string): string {

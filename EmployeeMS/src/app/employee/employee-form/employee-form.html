@@ -45,6 +45,9 @@
           <span *ngIf="employeeForm.get('id')?.errors?.['required']">Employee ID is required</span>
           <span *ngIf="employeeForm.get('id')?.errors?.['min']">Employee ID must be at least 1</span>
         </div>
+        <small class="field-hint" *ngIf="!isEditMode" style="color: #0D9488;">
+          <i class="bi bi-stars"></i> Next available ID is automatically suggested. You can also type a custom ID.
+        </small>
         <small class="field-hint" *ngIf="isEditMode">
           <i class="bi bi-lock-fill"></i> Employee ID is permanent and cannot be modified.
         </small>
