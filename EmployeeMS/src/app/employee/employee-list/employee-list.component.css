@@ -534,6 +534,96 @@
 }
 
 /* Status Badge */
+.status-pill-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.status-pill-wrapper.status-active {
+  background-color: #CCFBF1;
+  color: #0F766E;
+  border-color: #99F6E4;
+}
+
+.status-pill-wrapper.status-active .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #0D9488;
+  animation: pulse 2s infinite;
+}
+
+.status-pill-wrapper.status-leave {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border-color: #FDE68A;
+}
+
+.status-pill-wrapper.status-leave .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #F59E0B;
+}
+
+.status-pill-wrapper.status-inactive {
+  background-color: #F1F5F9;
+  color: #64748B;
+  border-color: #CBD5E1;
+}
+
+.status-pill-wrapper.status-inactive .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #94A3B8;
+}
+
+.status-select {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  padding: 0 14px 0 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.status-select option {
+  background-color: #FFFFFF;
+  color: #1E293B;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+}
+
+.status-chevron {
+  position: absolute;
+  right: 8px;
+  font-size: 9px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.status-pill-wrapper:hover {
+  filter: brightness(0.97);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .status-badge-active {
   display: inline-flex;
   align-items: center;

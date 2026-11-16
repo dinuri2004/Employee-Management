@@ -5,4 +5,5 @@ export interface Employee {
   email: string;
   address?: string;
   createdBy?: string;
+  status?: string;
 }

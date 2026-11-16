@@ -37,6 +37,10 @@ export class EmployeeService {
     return this.http.put<Employee>(`${this.apiUrl}/${id}`, emp, { headers: this.getHeaders() });
   }
 
+  updateStatus(id: number, status?: string): Observable<Employee> {
+    return this.http.patch<Employee>(`${this.apiUrl}/${id}/status`, { status }, { headers: this.getHeaders() });
+  }
+
   deleteEmployee(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }

@@ -1,6 +1,7 @@
 package com.employee.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,7 +36,6 @@ public class EmployeeController {
     public ResponseEntity<List<Employee>> getAll(@RequestHeader(value = "X-Username", required = false) String username) {
         List<Employee> employees = repository.findAll();
         System.out.println("GET /api/employees - Retrieved " + employees.size() + " total employees (viewed by: " + username + ")");
-        employees.forEach(e -> System.out.println("  - " + e.getId() + ": " + e.getFirstName() + " " + e.getLastName() + " (created by: " + e.getCreatedBy() + ")"));
         return ResponseEntity.ok()
                 .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
                 .header(org.springframework.http.HttpHeaders.PRAGMA, "no-cache")
@@ -67,11 +68,15 @@ public class EmployeeController {
                     .body(java.util.Collections.singletonMap("message", "Employee ID " + employee.getId() + " already exists. Please choose a different ID."));
         }
 
+        if (employee.getStatus() == null || employee.getStatus().trim().isEmpty()) {
+            employee.setStatus("Active");
+        }
+
         if (username != null && !username.isEmpty()) {
             employee.setCreatedBy(username);
         }
         Employee saved = repository.save(employee);
-        System.out.println("  - Saved with ID: " + saved.getId());
+        System.out.println("  - Saved with ID: " + saved.getId() + ", status: " + saved.getStatus());
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
@@ -83,7 +88,28 @@ public class EmployeeController {
                     existing.setLastName(employee.getLastName());
                     existing.setEmail(employee.getEmail());
                     existing.setAddress(employee.getAddress());
+                    if (employee.getStatus() != null && !employee.getStatus().trim().isEmpty()) {
+                        existing.setStatus(employee.getStatus());
+                    }
                     repository.save(existing);
+                    return ResponseEntity.ok(existing);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Employee> updateStatus(@PathVariable Long id, @RequestBody(required = false) Map<String, String> body) {
+        return repository.findById(id)
+                .map(existing -> {
+                    String newStatus = (body != null) ? body.get("status") : null;
+                    if (newStatus != null && !newStatus.trim().isEmpty()) {
+                        existing.setStatus(newStatus.trim());
+                    } else {
+                        // Toggle between Active and On Leave if no status passed
+                        existing.setStatus("Active".equalsIgnoreCase(existing.getStatus()) ? "On Leave" : "Active");
+                    }
+                    repository.save(existing);
+                    System.out.println("PATCH /api/employees/" + id + "/status -> " + existing.getStatus());
                     return ResponseEntity.ok(existing);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -98,4 +124,3 @@ public class EmployeeController {
         return ResponseEntity.notFound().build();
     }
 }
-

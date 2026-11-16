@@ -144,6 +144,21 @@
         </div>
       </div>
 
+      <!-- Status Field -->
+      <div class="form-field-group">
+        <label for="status" class="field-label">
+          Employment Status <span class="required-star">*</span>
+        </label>
+        <div class="input-with-icon">
+          <i class="bi bi-shield-check field-icon"></i>
+          <select class="custom-input" id="status" formControlName="status">
+            <option value="Active">Active (Operational &amp; Present)</option>
+            <option value="On Leave">On Leave (Temporarily Away)</option>
+            <option value="Inactive">Inactive (Not Currently Assigned)</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Actions Bar -->
       <div class="form-actions-bar">
         <button type="button" class="btn-cancel" (click)="onCancel()">

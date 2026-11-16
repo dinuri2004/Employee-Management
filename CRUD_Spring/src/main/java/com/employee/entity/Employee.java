@@ -15,6 +15,7 @@ public class Employee {
     private String email;
     private String address;
     private String createdBy;
+    private String status = "Active";
 
     public Employee() {
     }
@@ -24,6 +25,16 @@ public class Employee {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.status = "Active";
+    }
+
+    public Employee(Long id, String firstName, String lastName, String email, String address, String status) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.status = (status != null && !status.trim().isEmpty()) ? status : "Active";
     }
 
     public Long getId() {
@@ -72,5 +83,13 @@ public class Employee {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getStatus() {
+        return (status == null || status.trim().isEmpty()) ? "Active" : status;
+    }
+
+    public void setStatus(String status) {
+        this.status = (status != null && !status.trim().isEmpty()) ? status : "Active";
     }
 }

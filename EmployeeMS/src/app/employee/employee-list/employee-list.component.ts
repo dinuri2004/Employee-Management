@@ -78,7 +78,7 @@ export class EmployeeListComponent implements OnInit {
   private updateStats(): void {
     const list = this.employees;
     this.totalEmployeesCount = list.length;
-    this.activePersonnelCount = list.length;
+    this.activePersonnelCount = list.filter(e => (e.status || 'Active').toLowerCase() === 'active').length;
 
     if (!list.length) {
       this.uniqueLocationsCount = 0;
@@ -122,6 +122,45 @@ export class EmployeeListComponent implements OnInit {
 
   trackByLoc(index: number, item: LocationStat): string {
     return item.name;
+  }
+
+  onStatusChange(emp: Employee, newStatus: string): void {
+    const prevStatus = emp.status || 'Active';
+    emp.status = newStatus;
+    this.updateStats();
+
+    this.empService.updateStatus(emp.id, newStatus).subscribe({
+      next: (updated) => {
+        emp.status = updated.status || newStatus;
+        this.updateStats();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error updating status via patch:', err);
+        // Fallback to updateEmployee
+        const copy: Employee = { ...emp, status: newStatus };
+        this.empService.updateEmployee(emp.id, copy).subscribe({
+          next: (saved) => {
+            emp.status = saved.status || newStatus;
+            this.updateStats();
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            emp.status = prevStatus;
+            this.updateStats();
+            this.cdr.detectChanges();
+            alert('Failed to update employee status');
+          }
+        });
+      }
+    });
+  }
+
+  getStatusClass(status?: string): string {
+    const s = (status || 'Active').toLowerCase();
+    if (s === 'on leave') return 'status-leave';
+    if (s === 'inactive') return 'status-inactive';
+    return 'status-active';
   }
 
   getInitials(firstName?: string, lastName?: string): string {

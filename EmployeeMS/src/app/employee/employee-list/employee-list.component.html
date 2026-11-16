@@ -256,12 +256,22 @@
               </div>
             </td>
 
-            <!-- Status Badge (Teal) -->
+            <!-- Status Badge (Interactive Dropdown Pill) -->
             <td class="col-status">
-              <span class="status-badge-active">
-                <span class="pulse-dot"></span>
-                Active
-              </span>
+              <div class="status-pill-wrapper" [ngClass]="getStatusClass(emp.status)">
+                <span class="status-dot"></span>
+                <select
+                  class="status-select"
+                  [ngModel]="emp.status || 'Active'"
+                  (ngModelChange)="onStatusChange(emp, $event)"
+                  title="Click to change status"
+                >
+                  <option value="Active">Active</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <i class="bi bi-chevron-down status-chevron"></i>
+              </div>
             </td>
 
             <!-- Actions (Royal Blue Edit, Red Delete) -->
