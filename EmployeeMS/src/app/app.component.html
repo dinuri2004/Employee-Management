@@ -41,7 +41,7 @@
         <i class="bi bi-grid-1x2-fill item-icon"></i>
         <span>Dashboard</span>
       </a>
-      <a routerLink="/employees/new" routerLinkActive="active-nav" class="sidebar-item">
+      <a *ngIf="authService.isAdmin" routerLink="/employees/new" routerLinkActive="active-nav" class="sidebar-item">
         <i class="bi bi-person-plus-fill item-icon"></i>
         <span>Add Employee</span>
       </a>
@@ -53,7 +53,7 @@
         <img [src]="getProfilePhoto()" alt="Profile" class="user-thumb" />
         <div class="user-meta">
           <span class="meta-name">{{ currentUser.username }}</span>
-          <span class="meta-role">Admin Access</span>
+          <span class="meta-role">{{ authService.userRoleTitle }}</span>
         </div>
         <button type="button" class="btn-gear" title="Edit Profile">
           <i class="bi bi-person-gear"></i>
@@ -75,7 +75,7 @@
         <span class="live-pill"><i class="bi bi-broadcast"></i> Live Sync</span>
       </div>
       <div class="topbar-right">
-        <a routerLink="/employees/new" class="btn-teal">
+        <a *ngIf="authService.isAdmin" routerLink="/employees/new" class="btn-teal">
           <i class="bi bi-plus-lg"></i>
           <span>Add Employee</span>
         </a>

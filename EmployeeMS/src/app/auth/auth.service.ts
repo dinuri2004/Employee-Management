@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 export interface User {
   username: string;
   email: string;
+  role?: string;
 }
 
 interface AuthResponse {
@@ -39,6 +40,20 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  public get isAdmin(): boolean {
+    const user = this.currentUserValue;
+    if (!user) return false;
+    return (user.role?.toUpperCase() === 'ADMIN') || (user.username?.toLowerCase() === 'admin');
+  }
+
+  public get isEmployee(): boolean {
+    return !this.isAdmin;
+  }
+
+  public get userRoleTitle(): string {
+    return this.isAdmin ? 'Admin Access' : 'Employee Access';
+  }
+
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { username, password })
       .pipe(
@@ -51,8 +66,8 @@ export class AuthService {
       );
   }
 
-  register(username: string, email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, { username, email, password });
+  register(username: string, email: string, password: string, role: string = 'EMPLOYEE'): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, { username, email, password, role });
   }
 
   logout(): void {

@@ -42,13 +42,18 @@ public class AuthController {
                     .body(createResponse(false, "Email already exists"));
         }
 
-        User user = new User(username, email, password);
+        String reqRole = request.get("role");
+        String role = (reqRole != null && !reqRole.trim().isEmpty()) ? reqRole.toUpperCase() : "EMPLOYEE";
+        if ("admin".equalsIgnoreCase(username)) {
+            role = "ADMIN";
+        }
+        User user = new User(username, email, password, role);
         userRepository.save(user);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("message", "Registration successful");
-        response.put("user", Map.of("username", username, "email", email));
+        response.put("user", Map.of("username", username, "email", email, "role", user.getRole()));
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -69,7 +74,7 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("message", "Login successful");
-        response.put("user", Map.of("username", user.getUsername(), "email", user.getEmail()));
+        response.put("user", Map.of("username", user.getUsername(), "email", user.getEmail(), "role", user.getRole()));
         
         return ResponseEntity.ok(response);
     }

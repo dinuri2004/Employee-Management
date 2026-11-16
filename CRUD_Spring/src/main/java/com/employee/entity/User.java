@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String role = "EMPLOYEE";
+
     private String resetToken;
 
     private LocalDateTime resetTokenExpiry;
@@ -35,6 +38,14 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = "admin".equalsIgnoreCase(username) ? "ADMIN" : "EMPLOYEE";
+    }
+
+    public User(String username, String email, String password, String role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = (role != null && !role.trim().isEmpty()) ? role.toUpperCase() : ("admin".equalsIgnoreCase(username) ? "ADMIN" : "EMPLOYEE");
     }
 
     public Long getId() {
@@ -67,6 +78,17 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        if ("admin".equalsIgnoreCase(username)) {
+            return "ADMIN";
+        }
+        return (role == null || role.trim().isEmpty()) ? "EMPLOYEE" : role.toUpperCase();
+    }
+
+    public void setRole(String role) {
+        this.role = (role != null && !role.trim().isEmpty()) ? role.toUpperCase() : "EMPLOYEE";
     }
 
     public String getResetToken() {

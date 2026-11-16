@@ -30,7 +30,8 @@ export class RegisterComponent {
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
+      role: ['EMPLOYEE', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -47,9 +48,9 @@ export class RegisterComponent {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      const { username, email, password } = this.registerForm.value;
+      const { username, email, password, role } = this.registerForm.value;
       
-      this.authService.register(username, email, password).subscribe({
+      this.authService.register(username, email, password, role).subscribe({
         next: (response) => {
           if (response.success) {
             this.successMessage = 'Registration successful! Please sign in.';

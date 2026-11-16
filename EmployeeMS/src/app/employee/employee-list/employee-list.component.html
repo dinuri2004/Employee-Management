@@ -7,7 +7,7 @@
         Welcome back, <strong>{{ username }}</strong>! Here is an overview of your workforce and team performance.
       </p>
     </div>
-    <div class="header-actions">
+    <div class="header-actions" *ngIf="authService.isAdmin">
       <button class="btn-teal" (click)="addEmployee()">
         <i class="bi bi-person-plus-fill"></i>
         <span>Add Employee</span>
@@ -159,7 +159,7 @@
       <p style="color: #64748B; font-size: 14px; margin: 0; line-height: 1.5;">
         All mock data has been removed. Your workspace is completely clean and ready for real workforce records. Click below to add your first employee.
       </p>
-      <button class="btn-teal" (click)="addEmployee()" style="margin-top: 4px;">
+      <button *ngIf="authService.isAdmin" class="btn-teal" (click)="addEmployee()" style="margin-top: 4px;">
         <i class="bi bi-person-plus-fill"></i>
         <span>Add Your First Employee</span>
       </button>
@@ -194,7 +194,7 @@
           </button>
         </div>
 
-        <button class="btn-teal" (click)="addEmployee()">
+        <button *ngIf="authService.isAdmin" class="btn-teal" (click)="addEmployee()">
           <i class="bi bi-plus-circle"></i>
           <span>Add Employee</span>
         </button>
@@ -256,9 +256,10 @@
               </div>
             </td>
 
-            <!-- Status Badge (Interactive Dropdown Pill) -->
+            <!-- Status Badge (Interactive for Admin, Read-Only for Employee) -->
             <td class="col-status">
-              <div class="status-pill-wrapper" [ngClass]="getStatusClass(emp.status)">
+              <!-- Admin Interactive Status Selector -->
+              <div *ngIf="authService.isAdmin" class="status-pill-wrapper" [ngClass]="getStatusClass(emp.status)">
                 <span class="status-dot"></span>
                 <select
                   class="status-select"
@@ -272,11 +273,17 @@
                 </select>
                 <i class="bi bi-chevron-down status-chevron"></i>
               </div>
+
+              <!-- Employee Read-Only Status View -->
+              <div *ngIf="!authService.isAdmin" class="status-pill-wrapper status-pill-readonly" [ngClass]="getStatusClass(emp.status)">
+                <span class="status-dot"></span>
+                <span class="status-text-readonly">{{ emp.status || 'Active' }}</span>
+              </div>
             </td>
 
-            <!-- Actions (Royal Blue Edit, Red Delete) -->
+            <!-- Actions (Edit/Delete for Admin, Read-Only Tag for Employee) -->
             <td class="col-actions text-end">
-              <div class="action-btn-group">
+              <div class="action-btn-group" *ngIf="authService.isAdmin; else employeeActionView">
                 <button
                   type="button"
                   class="btn-action-edit"
@@ -296,6 +303,12 @@
                   <span>Delete</span>
                 </button>
               </div>
+              <ng-template #employeeActionView>
+                <span class="badge-readonly-tag" title="Employee records can only be modified by administrators">
+                  <i class="bi bi-lock-fill"></i>
+                  <span>View Only</span>
+                </span>
+              </ng-template>
             </td>
           </tr>
         </tbody>

@@ -50,7 +50,7 @@ export class EmployeeListComponent implements OnInit {
 
   constructor(
     private empService: EmployeeService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}

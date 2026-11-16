@@ -6,6 +6,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { authGuard } from './auth/auth.guard';
+import { adminGuard } from './auth/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -14,6 +15,6 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'employees', component: EmployeeListComponent, canActivate: [authGuard] },
-  { path: 'employees/new', component: EmployeeForm, canActivate: [authGuard] },
-  { path: 'employees/edit/:id', component: EmployeeForm, canActivate: [authGuard] }
+  { path: 'employees/new', component: EmployeeForm, canActivate: [authGuard, adminGuard] },
+  { path: 'employees/edit/:id', component: EmployeeForm, canActivate: [authGuard, adminGuard] }
 ];

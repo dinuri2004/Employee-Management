@@ -23,7 +23,7 @@
 
     <div class="auth-subheading">
       <h2 class="auth-title">Create Account</h2>
-      <p class="auth-desc">Set up your administrator credentials</p>
+      <p class="auth-desc">Join StaffSphere as an Administrator or Employee</p>
     </div>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
@@ -102,6 +102,18 @@
         </div>
         <div class="invalid-feedback" *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched">
           Passwords do not match
+        </div>
+      </div>
+
+      <!-- Account Role Selection -->
+      <div class="form-field-group">
+        <label for="role" class="field-label">Account Role</label>
+        <div class="input-with-icon">
+          <i class="bi bi-person-badge field-icon"></i>
+          <select id="role" formControlName="role" class="custom-input">
+            <option value="EMPLOYEE">Employee (Directory &amp; Team View)</option>
+            <option value="ADMIN">Administrator (Full Workforce Management)</option>
+          </select>
         </div>
       </div>
 
