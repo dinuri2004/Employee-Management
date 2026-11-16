@@ -33,12 +33,12 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getAll(@RequestHeader(value = "X-Username", required = false) String username) {
         List<Employee> employees;
-        if (username != null && !username.isEmpty()) {
+        if (username != null && !username.isEmpty() && !"admin".equalsIgnoreCase(username)) {
             employees = repository.findByCreatedBy(username);
             System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees for user: " + username);
         } else {
             employees = repository.findAll();
-            System.out.println("GET /api/employees - Retrieved " + employees.size() + " employees");
+            System.out.println("GET /api/employees - Retrieved " + employees.size() + " total employees (all/admin view)");
         }
         employees.forEach(e -> System.out.println("  - " + e.getId() + ": " + e.getFirstName() + " " + e.getLastName() + " (created by: " + e.getCreatedBy() + ")"));
         return employees;
@@ -51,8 +51,15 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody Employee employee, @RequestHeader(value = "X-Username", required = false) String username) {
-        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName() + " by user: " + username);
+    public ResponseEntity<?> create(@RequestBody Employee employee, @RequestHeader(value = "X-Username", required = false) String username) {
+        System.out.println("POST /api/employees - Creating employee: " + employee.getFirstName() + " " + employee.getLastName() + " (ID: " + employee.getId() + ") by user: " + username);
+        
+        if (employee.getId() != null && repository.existsById(employee.getId())) {
+            System.out.println("  - Conflict: Employee ID " + employee.getId() + " already exists!");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Collections.singletonMap("message", "Employee ID " + employee.getId() + " already exists. Please choose a different ID."));
+        }
+
         if (username != null && !username.isEmpty()) {
             employee.setCreatedBy(username);
         }

@@ -68,7 +68,13 @@ export class EmployeeForm implements OnInit {
           },
           error: (err) => {
             console.error('Error updating employee:', err);
-            alert('Failed to update employee');
+            let msg = 'Failed to update employee';
+            if (err.status === 0) {
+              msg = 'Unable to connect to the backend server. Please make sure the server is running (run.bat).';
+            } else if (err.error?.message) {
+              msg = err.error.message;
+            }
+            alert(msg);
           }
         });
       } else {
@@ -79,7 +85,13 @@ export class EmployeeForm implements OnInit {
           },
           error: (err) => {
             console.error('Error adding employee:', err);
-            alert('Failed to add employee');
+            let msg = 'Failed to add employee';
+            if (err.status === 0) {
+              msg = 'Unable to connect to the backend server. Please make sure the server is running (run.bat).';
+            } else if (err.status === 409 || err.error?.message) {
+              msg = err.error?.message || `Employee ID ${employee.id} already exists. Please choose a different ID.`;
+            }
+            alert(msg);
           }
         });
       }
