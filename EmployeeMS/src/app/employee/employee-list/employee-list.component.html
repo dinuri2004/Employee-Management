@@ -1,108 +1,362 @@
-<div class="container mt-4">
-  <div class="alert alert-info py-2 px-3 mb-3">
-    Welcome {{ username }}
+<div class="dashboard-container">
+  <!-- WELCOME & ACTION BAR -->
+  <div class="dashboard-header-section">
+    <div>
+      <h1 class="dashboard-title">Dashboard Overview</h1>
+      <p class="dashboard-subtitle">
+        Welcome back, <strong>{{ username }}</strong>! Here is an overview of your workforce and team performance.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-teal" (click)="addEmployee()">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>Add Employee</span>
+      </button>
+    </div>
   </div>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Employee List</h2>
-    <button mat-raised-button color="primary" (click)="addEmployee()">
-      <mat-icon>add</mat-icon> Add Employee
-    </button>
-  </div>
-
-  
-
-  <!-- Simple Table for Debugging -->
-  <div *ngIf="employees.length > 0" class="mb-4">
-    <div class="mb-3 search-wrapper">
-      <div class="input-group">
-        <span class="input-group-text"><mat-icon class="search-icon">search</mat-icon></span>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search by Employee ID, First Name, or Last Name"
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearchChange()"
-        />
+  <!-- STATS METRIC CARDS -->
+  <div class="stats-grid">
+    <!-- Stat 1: Total Employees (Royal Blue) -->
+    <div class="staff-card stat-card border-blue">
+      <div class="stat-icon-wrapper bg-blue-light text-royal-blue">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-label">Total Employees</span>
+        <div class="stat-value">{{ totalEmployees }}</div>
+        <div class="stat-trend trend-positive">
+          <i class="bi bi-arrow-up-right"></i>
+          <span>100% recorded in StaffSphere</span>
+        </div>
       </div>
     </div>
 
-    <h4>Employee Details</h4>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Address</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let emp of filteredEmployees" [class.search-highlight]="isRowHighlighted(emp)">
-          <td>{{ emp.id }}</td>
-          <td>{{ emp.firstName }}</td>
-          <td>{{ emp.lastName }}</td>
-          <td>{{ emp.email }}</td>
-          <td>{{ emp.address }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Stat 2: Active Personnel (Teal) -->
+    <div class="staff-card stat-card border-teal">
+      <div class="stat-icon-wrapper bg-teal-light text-teal">
+        <i class="bi bi-person-check-fill"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-label">Active Personnel</span>
+        <div class="stat-value">{{ activePersonnel }}</div>
+        <div class="stat-trend trend-teal">
+          <i class="bi bi-shield-check"></i>
+          <span>Operational & active</span>
+        </div>
+      </div>
+    </div>
 
-    <div *ngIf="filteredEmployees.length === 0" class="alert alert-secondary mt-2 mb-0">
-      No matching employees found for "{{ searchTerm }}".
+    <!-- Stat 3: Hubs & Locations (Purple) -->
+    <div class="staff-card stat-card border-purple">
+      <div class="stat-icon-wrapper bg-purple-light text-purple">
+        <i class="bi bi-geo-alt-fill"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-label">Regional Locations</span>
+        <div class="stat-value">{{ uniqueLocations }}</div>
+        <div class="stat-trend trend-purple">
+          <i class="bi bi-buildings"></i>
+          <span>Distinct work branches</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat 4: System Status (Deep Navy) -->
+    <div class="staff-card stat-card border-navy">
+      <div class="stat-icon-wrapper bg-navy-light text-navy">
+        <i class="bi bi-activity"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-label">System Health</span>
+        <div class="stat-value">99.9%</div>
+        <div class="stat-trend trend-navy">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Real-time database sync</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="employees.length === 0" class="alert alert-warning">
-    No employees found. Click "Add Employee" to create one.
+  <!-- CHARTS & VISUALS SECTION (Blue, Teal, Purple) -->
+  <div class="charts-grid">
+    <!-- Chart 1: Performance & Monthly Distribution Bar Chart -->
+    <div class="staff-card chart-card flex-2">
+      <div class="chart-header">
+        <div>
+          <h3 class="chart-title">Workforce Performance & Distribution</h3>
+          <p class="chart-subtitle">Monthly department activity across key business functions</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot bg-royal-blue"></span> Engineering</span>
+          <span class="legend-item"><span class="legend-dot bg-teal"></span> Operations</span>
+          <span class="legend-item"><span class="legend-dot bg-purple"></span> Creative & Admin</span>
+        </div>
+      </div>
+
+      <!-- Styled SVG Bar Visual -->
+      <div class="bar-chart-container">
+        <svg class="bar-chart-svg" viewBox="0 0 600 200" preserveAspectRatio="none">
+          <!-- Background Grid Lines -->
+          <line x1="0" y1="40" x2="600" y2="40" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="0" y1="90" x2="600" y2="90" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="0" y1="140" x2="600" y2="140" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
+          <line x1="0" y1="180" x2="600" y2="180" stroke="#CBD5E1" stroke-width="1.5" />
+
+          <!-- Month 1: Jan -->
+          <rect x="35" y="70" width="14" height="110" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="52" y="95" width="14" height="85" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="69" y="125" width="14" height="55" rx="4" fill="#8B5CF6" opacity="0.9" />
+
+          <!-- Month 2: Feb -->
+          <rect x="135" y="55" width="14" height="125" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="152" y="80" width="14" height="100" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="169" y="110" width="14" height="70" rx="4" fill="#8B5CF6" opacity="0.9" />
+
+          <!-- Month 3: Mar -->
+          <rect x="235" y="45" width="14" height="135" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="252" y="65" width="14" height="115" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="269" y="95" width="14" height="85" rx="4" fill="#8B5CF6" opacity="0.9" />
+
+          <!-- Month 4: Apr -->
+          <rect x="335" y="60" width="14" height="120" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="352" y="50" width="14" height="130" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="369" y="105" width="14" height="75" rx="4" fill="#8B5CF6" opacity="0.9" />
+
+          <!-- Month 5: May -->
+          <rect x="435" y="30" width="14" height="150" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="452" y="55" width="14" height="125" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="469" y="85" width="14" height="95" rx="4" fill="#8B5CF6" opacity="0.9" />
+
+          <!-- Month 6: Jun -->
+          <rect x="535" y="25" width="14" height="155" rx="4" fill="#2563EB" opacity="0.9" />
+          <rect x="552" y="45" width="14" height="135" rx="4" fill="#14B8A6" opacity="0.9" />
+          <rect x="569" y="75" width="14" height="105" rx="4" fill="#8B5CF6" opacity="0.9" />
+        </svg>
+        <div class="chart-x-labels">
+          <span>Jan</span>
+          <span>Feb</span>
+          <span>Mar</span>
+          <span>Apr</span>
+          <span>May</span>
+          <span>Jun</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 2: Donut Breakdown (Blue, Teal, Purple) -->
+    <div class="staff-card chart-card flex-1">
+      <div class="chart-header">
+        <div>
+          <h3 class="chart-title">Team Composition</h3>
+          <p class="chart-subtitle">Workforce segment allocation</p>
+        </div>
+      </div>
+
+      <div class="donut-wrapper">
+        <svg class="donut-svg" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="58" fill="none" stroke="#F1F5F9" stroke-width="20" />
+          <!-- Engineering (48% -> stroke-dasharray="175 364") -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke="#2563EB" stroke-width="20"
+                  stroke-dasharray="175 364" stroke-dashoffset="0" stroke-linecap="round" />
+          <!-- Operations (32% -> stroke-dasharray="116 364") -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke="#14B8A6" stroke-width="20"
+                  stroke-dasharray="116 364" stroke-dashoffset="-185" stroke-linecap="round" />
+          <!-- Creative & Admin (20% -> stroke-dasharray="73 364") -->
+          <circle cx="80" cy="80" r="58" fill="none" stroke="#8B5CF6" stroke-width="20"
+                  stroke-dasharray="60 364" stroke-dashoffset="-305" stroke-linecap="round" />
+          
+          <text x="80" y="75" text-anchor="middle" font-size="20" font-weight="700" fill="#142B4A">{{ totalEmployees }}</text>
+          <text x="80" y="93" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Staff</text>
+        </svg>
+
+        <div class="donut-legend">
+          <div class="donut-legend-row">
+            <span class="d-flex align-items-center gap-2">
+              <span class="legend-dot bg-royal-blue"></span>
+              <span class="legend-text">Engineering</span>
+            </span>
+            <span class="legend-val">48%</span>
+          </div>
+          <div class="donut-legend-row">
+            <span class="d-flex align-items-center gap-2">
+              <span class="legend-dot bg-teal"></span>
+              <span class="legend-text">Operations</span>
+            </span>
+            <span class="legend-val">32%</span>
+          </div>
+          <div class="donut-legend-row">
+            <span class="d-flex align-items-center gap-2">
+              <span class="legend-dot bg-purple"></span>
+              <span class="legend-text">Creative & Admin</span>
+            </span>
+            <span class="legend-val">20%</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <table mat-table [dataSource]="dataSource" class="table table-striped">
+  <!-- MAIN EMPLOYEE DIRECTORY (WHITE CARD) -->
+  <div class="staff-card directory-card">
+    <!-- Directory Header with Search and Add Button -->
+    <div class="directory-topbar">
+      <div class="directory-title-wrap">
+        <h3 class="directory-title">
+          <i class="bi bi-people"></i>
+          Employee Directory
+        </h3>
+        <span class="badge-count">{{ filteredEmployees.length }} of {{ totalEmployees }} members</span>
+      </div>
 
-    <!-- Columns -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
+      <div class="directory-actions">
+        <!-- Search Bar with Icon -->
+        <div class="search-box">
+          <i class="bi bi-search search-lens"></i>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search by ID, name, email or location..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()"
+          />
+          <button *ngIf="searchTerm" class="btn-clear-search" (click)="clearSearch()" title="Clear search">
+            <i class="bi bi-x-circle-fill"></i>
+          </button>
+        </div>
 
-    <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef>First Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.firstName }}</td>
-    </ng-container>
+        <button class="btn-teal" (click)="addEmployee()">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add Employee</span>
+        </button>
+      </div>
+    </div>
 
-    <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef>Last Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.lastName }}</td>
-    </ng-container>
+    <!-- Active Filter Notice -->
+    <div *ngIf="searchTerm" class="search-notice">
+      <span>Showing search results matching <strong>"{{ searchTerm }}"</strong></span>
+      <button class="btn-reset-filter" (click)="clearSearch()">Reset Filter</button>
+    </div>
 
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-    </ng-container>
+    <!-- Table Container -->
+    <div class="table-responsive" *ngIf="filteredEmployees.length > 0">
+      <table class="staff-table">
+        <thead>
+          <tr>
+            <th class="col-emp">Employee</th>
+            <th class="col-id">Staff ID</th>
+            <th class="col-email">Email Address</th>
+            <th class="col-address">Location / Address</th>
+            <th class="col-status">Status</th>
+            <th class="col-actions text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of filteredEmployees" [class.highlighted-row]="isRowHighlighted(emp)">
+            <!-- Avatar & Name -->
+            <td class="col-emp">
+              <div class="emp-profile-cell">
+                <div class="emp-avatar" [style.background]="getAvatarColor(emp.id)">
+                  {{ getInitials(emp.firstName, emp.lastName) }}
+                </div>
+                <div class="emp-name-box">
+                  <span class="emp-fullname">{{ emp.firstName }} {{ emp.lastName }}</span>
+                  <span class="emp-sub">StaffSphere Member</span>
+                </div>
+              </div>
+            </td>
 
-    <ng-container matColumnDef="address">
-      <th mat-header-cell *matHeaderCellDef>Address</th>
-      <td mat-cell *matCellDef="let element">{{ element.address }}</td>
-    </ng-container>
+            <!-- Staff ID -->
+            <td class="col-id">
+              <span class="id-tag">#{{ emp.id }}</span>
+            </td>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-button color="primary"
-        (click)="editEmployee(element)">
-  Edit
-</button>
+            <!-- Email -->
+            <td class="col-email">
+              <div class="cell-with-icon">
+                <i class="bi bi-envelope text-muted"></i>
+                <a [href]="'mailto:' + emp.email" class="email-link">{{ emp.email }}</a>
+              </div>
+            </td>
 
-<button mat-button color="warn"
-        (click)="deleteEmployee(element.id)">
-  Delete
-</button>
+            <!-- Address -->
+            <td class="col-address">
+              <div class="cell-with-icon">
+                <i class="bi bi-geo-alt text-muted"></i>
+                <span class="address-text">{{ emp.address || '—' }}</span>
+              </div>
+            </td>
 
-      </td>
-    </ng-container>
+            <!-- Status Badge (Teal) -->
+            <td class="col-status">
+              <span class="status-badge-active">
+                <span class="pulse-dot"></span>
+                Active
+              </span>
+            </td>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.search-highlight]="isRowHighlighted(row)"></tr>
-  </table>
+            <!-- Actions (Royal Blue Edit, Red Delete) -->
+            <td class="col-actions text-end">
+              <div class="action-btn-group">
+                <button
+                  type="button"
+                  class="btn-action-edit"
+                  (click)="editEmployee(emp)"
+                  title="Edit employee record"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                  <span>Edit</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-action-delete"
+                  (click)="deleteEmployee(emp.id)"
+                  title="Delete employee"
+                >
+                  <i class="bi bi-trash3"></i>
+                  <span>Delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State: No Employees In Database -->
+    <div class="empty-state" *ngIf="employees.length === 0">
+      <div class="empty-icon-circle bg-teal-light text-teal">
+        <i class="bi bi-person-lines-fill"></i>
+      </div>
+      <h4 class="empty-title">No employees registered yet</h4>
+      <p class="empty-desc">
+        Start building your StaffSphere workforce by adding your first team member.
+      </p>
+      <button class="btn-teal mt-3" (click)="addEmployee()">
+        <i class="bi bi-plus-lg"></i>
+        <span>Add First Employee</span>
+      </button>
+    </div>
+
+    <!-- Empty State: Search Found No Match -->
+    <div class="empty-state" *ngIf="employees.length > 0 && filteredEmployees.length === 0">
+      <div class="empty-icon-circle bg-navy-light text-navy">
+        <i class="bi bi-search"></i>
+      </div>
+      <h4 class="empty-title">No matching employees found</h4>
+      <p class="empty-desc">
+        No records match "{{ searchTerm }}". Try adjusting your search query or clear the filter.
+      </p>
+      <button class="btn-royal-blue mt-3" (click)="clearSearch()">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Clear Search</span>
+      </button>
+    </div>
+
+    <!-- Directory Footer -->
+    <div class="directory-footer" *ngIf="filteredEmployees.length > 0">
+      <span class="footer-count">Showing {{ filteredEmployees.length }} active staff member(s)</span>
+      <span class="footer-brand">StaffSphere &bull; Empowering People. Simplifying Work.</span>
+    </div>
+  </div>
 </div>

@@ -1,54 +1,163 @@
-<div class="container-fluid">
-  <nav class="navbar navbar-dark bg-primary mb-4" *ngIf="currentUser">
-    <div class="container">
-      <span class="navbar-brand mb-0 h1">
-        <i class="bi bi-building"></i> Employee Management System
-      </span>
-      <div class="user-info">
-        <span class="user-name">{{ currentUser.username }}</span>
-        <button class="avatar-btn ms-3" type="button" (click)="toggleProfilePanel()" title="Profile">
-          <img [src]="getProfilePhoto()" alt="Profile" class="avatar-img" />
-        </button>
-        <button class="btn btn-outline-light btn-sm ms-3" (click)="logout()">
-          <i class="bi bi-box-arrow-right"></i> Logout
-        </button>
+<!-- Authenticated Layout with Deep Navy Sidebar -->
+<div class="app-shell" *ngIf="currentUser; else unauthenticatedView">
+  <!-- SIDEBAR (Deep Navy) -->
+  <aside class="sidebar-deep-navy">
+    <!-- Brand Header -->
+    <div class="sidebar-header">
+      <div class="brand-logo-badge">
+        <!-- Modern circular icon combining three abstract human figures (Teamwork & Connection) -->
+        <svg class="staffsphere-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#0D1F36" stroke="#2563EB" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="32" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          
+          <!-- Connecting Teamwork Wave / Ring -->
+          <path d="M 50 34 A 20 20 0 0 1 70 54" stroke="#2563EB" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M 68 66 A 20 20 0 0 1 32 66" stroke="#14B8A6" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M 30 54 A 20 20 0 0 1 50 34" stroke="#8B5CF6" stroke-width="3" stroke-linecap="round" fill="none"/>
 
-        <div class="profile-panel" *ngIf="showProfilePanel">
-          <h6 class="mb-3">My Profile</h6>
+          <!-- Figure 1 (Top - Royal Blue) -->
+          <circle cx="50" cy="24" r="6.5" fill="#2563EB"/>
+          <path d="M41 42 C41 33, 59 33, 59 42 C59 47, 54 48, 50 49 C46 48, 41 47, 41 42 Z" fill="#2563EB"/>
 
-          <div class="profile-photo-section">
-            <img [src]="getProfilePhoto()" alt="Profile" class="profile-photo-preview" />
-            <input type="file" accept="image/*" (change)="onPhotoSelected($event)" class="form-control form-control-sm" />
-            <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeProfilePhoto()" [disabled]="!profile.photoDataUrl">
-              Remove Photo
-            </button>
-          </div>
+          <!-- Figure 2 (Bottom Right - Teal) -->
+          <circle cx="70" cy="58" r="6.5" fill="#14B8A6"/>
+          <path d="M59 72 C64 65, 80 71, 77 79 C74 83, 67 82, 63 80 C60 77, 58 74, 59 72 Z" fill="#14B8A6"/>
 
-          <label class="form-label">First Name</label>
-          <input class="form-control form-control-sm mb-2" [(ngModel)]="profile.firstName" />
-
-          <label class="form-label">Last Name</label>
-          <input class="form-control form-control-sm mb-2" [(ngModel)]="profile.lastName" />
-
-          <label class="form-label">Address</label>
-          <input class="form-control form-control-sm mb-2" [(ngModel)]="profile.address" />
-
-          <label class="form-label">Telephone Number</label>
-          <input class="form-control form-control-sm mb-2" [(ngModel)]="profile.telephone" />
-
-          <label class="form-label">Email Address</label>
-          <input class="form-control form-control-sm mb-3" [value]="profile.email" readonly disabled />
-
-          <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-sm btn-secondary" type="button" (click)="showProfilePanel = false">Close</button>
-            <button class="btn btn-sm btn-primary" type="button" (click)="saveProfile()">Save</button>
-          </div>
-        </div>
+          <!-- Figure 3 (Bottom Left - Purple) -->
+          <circle cx="30" cy="58" r="6.5" fill="#8B5CF6"/>
+          <path d="M41 72 C36 65, 20 71, 23 79 C26 83, 33 82, 37 80 C40 77, 42 74, 41 72 Z" fill="#8B5CF6"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-name">StaffSphere</h1>
+        <p class="brand-tagline">Empowering People. Simplifying Work.</p>
       </div>
     </div>
-  </nav>
-  
-  <div [ngClass]="currentUser ? 'container' : ''">
-    <router-outlet></router-outlet>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-menu">
+      <div class="menu-label">CORE NAVIGATION</div>
+      <a routerLink="/employees" routerLinkActive="active-nav" [routerLinkActiveOptions]="{exact: true}" class="sidebar-item">
+        <i class="bi bi-grid-1x2-fill item-icon"></i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/employees/new" routerLinkActive="active-nav" class="sidebar-item">
+        <i class="bi bi-person-plus-fill item-icon"></i>
+        <span>Add Employee</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Bottom User Info -->
+    <div class="sidebar-bottom">
+      <div class="user-pill" (click)="toggleProfilePanel()">
+        <img [src]="getProfilePhoto()" alt="Profile" class="user-thumb" />
+        <div class="user-meta">
+          <span class="meta-name">{{ currentUser.username }}</span>
+          <span class="meta-role">Admin Access</span>
+        </div>
+        <button type="button" class="btn-gear" title="Edit Profile">
+          <i class="bi bi-person-gear"></i>
+        </button>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT (Light Gray Background) -->
+  <div class="main-viewport">
+    <!-- Topbar Header -->
+    <header class="topbar-header">
+      <div class="topbar-left">
+        <h2 class="topbar-title">StaffSphere Portal</h2>
+        <span class="live-pill"><i class="bi bi-broadcast"></i> Live Sync</span>
+      </div>
+      <div class="topbar-right">
+        <a routerLink="/employees/new" class="btn-teal">
+          <i class="bi bi-plus-lg"></i>
+          <span>Add Employee</span>
+        </a>
+        <div class="user-avatar-trigger" (click)="toggleProfilePanel()" title="Toggle Profile Settings">
+          <img [src]="getProfilePhoto()" alt="Avatar" class="avatar-round" />
+          <span class="user-tag">{{ currentUser.username }}</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Profile Slide-out Panel -->
+    <div class="profile-backdrop" *ngIf="showProfilePanel" (click)="showProfilePanel = false"></div>
+    <div class="profile-drawer staff-card" *ngIf="showProfilePanel">
+      <div class="drawer-header">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-person-badge-fill text-primary fs-5"></i>
+          <h5 class="m-0">StaffSphere Profile</h5>
+        </div>
+        <button class="btn-close-drawer" (click)="showProfilePanel = false">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="avatar-edit-box">
+          <img [src]="getProfilePhoto()" alt="Profile" class="avatar-preview-lg" />
+          <div class="avatar-actions">
+            <label class="btn btn-sm btn-outline-primary m-0">
+              <i class="bi bi-upload"></i> Upload Photo
+              <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+            </label>
+            <button class="btn btn-sm btn-outline-danger" type="button" (click)="removeProfilePhoto()" [disabled]="!profile.photoDataUrl">
+              <i class="bi bi-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label class="drawer-label">First Name</label>
+          <input class="form-control form-control-sm" [(ngModel)]="profile.firstName" placeholder="First Name" />
+        </div>
+
+        <div class="mb-2">
+          <label class="drawer-label">Last Name</label>
+          <input class="form-control form-control-sm" [(ngModel)]="profile.lastName" placeholder="Last Name" />
+        </div>
+
+        <div class="mb-2">
+          <label class="drawer-label">Address</label>
+          <input class="form-control form-control-sm" [(ngModel)]="profile.address" placeholder="Physical Address" />
+        </div>
+
+        <div class="mb-2">
+          <label class="drawer-label">Telephone</label>
+          <input class="form-control form-control-sm" [(ngModel)]="profile.telephone" placeholder="Contact Number" />
+        </div>
+
+        <div class="mb-3">
+          <label class="drawer-label">Account Email (Verified)</label>
+          <input class="form-control form-control-sm bg-light" [value]="profile.email" readonly disabled />
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn btn-sm btn-secondary me-2" type="button" (click)="showProfilePanel = false">Cancel</button>
+        <button class="btn-royal-blue" type="button" (click)="saveProfile()">
+          <i class="bi bi-check2"></i> Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- Routed Page Content -->
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
   </div>
 </div>
+
+<!-- Unauthenticated Full-Screen Layout (Login / Register / Password Reset) -->
+<ng-template #unauthenticatedView>
+  <div class="auth-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+</ng-template>

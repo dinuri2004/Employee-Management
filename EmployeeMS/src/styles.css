@@ -1,8 +1,94 @@
-body.dark-mode {
-  background-color: #121212;
-  color: #fff;
+:root {
+  --sidebar-navy: #142B4A;
+  --sidebar-navy-hover: #1E3A63;
+  --bg-light: #F4F7FB;
+  --card-white: #FFFFFF;
+  --primary-blue: #2563EB;
+  --primary-blue-hover: #1D4ED8;
+  --teal-accent: #14B8A6;
+  --teal-hover: #0D9488;
+  --purple-accent: #8B5CF6;
+  --purple-light: #EDE9FE;
+  --text-dark: #1E293B;
+  --text-gray: #64748B;
+  --border-light: #E2E8F0;
+  --danger-red: #EF4444;
+  --sidebar-width: 270px;
+}
 
-  table {
-    background-color: #1e1e1e;
-  }
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-light) !important;
+  color: var(--text-dark);
+  font-family: 'Plus Jakarta Sans', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--sidebar-navy);
+  font-weight: 700;
+  margin-top: 0;
+}
+
+/* Custom Primary Button (Royal Blue) */
+.btn-royal-blue {
+  background-color: var(--primary-blue) !important;
+  border-color: var(--primary-blue) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.btn-royal-blue:hover {
+  background-color: var(--primary-blue-hover) !important;
+  border-color: var(--primary-blue-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* Custom Add Employee Button (Teal) */
+.btn-teal {
+  background-color: var(--teal-accent) !important;
+  border-color: var(--teal-accent) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.btn-teal:hover {
+  background-color: var(--teal-hover) !important;
+  border-color: var(--teal-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  color: #ffffff !important;
+}
+
+/* White Card Utility */
+.staff-card {
+  background: var(--card-white);
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 10px rgba(20, 43, 74, 0.04);
+  padding: 24px;
+  transition: box-shadow 0.2s ease;
+}
+
+.staff-card:hover {
+  box-shadow: 0 6px 20px rgba(20, 43, 74, 0.07);
 }

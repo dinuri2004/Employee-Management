@@ -28,8 +28,7 @@ import { AuthService } from '../../auth/auth.service';
 })
 export class EmployeeListComponent implements OnInit {
 
-  // ✅ Used by mat-table
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'address', 'actions'];
+  displayedColumns: string[] = ['avatar', 'id', 'name', 'email', 'address', 'status', 'actions'];
   dataSource = new MatTableDataSource<Employee>([]);
   username = '';
   searchTerm = '';
@@ -44,28 +43,62 @@ export class EmployeeListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.username = this.authService.currentUserValue?.username || 'User';
+    this.username = this.authService.currentUserValue?.username || 'Admin';
     this.loadEmployees();
   }
 
   loadEmployees(): void {
-    console.log('Loading employees...');
     this.empService.getEmployees().subscribe({
       next: (data) => {
-        console.log('Received data:', data);
-        console.log('Data length:', data.length);
         this.employees = data;
         this.applySearch();
-        console.log('DataSource updated:', this.dataSource.data);
       },
       error: (err) => {
         console.error('Error loading employees:', err);
-        alert('Failed to load employees. Make sure the Spring Boot backend is running.');
       }
     });
   }
 
+  get totalEmployees(): number {
+    return this.employees.length;
+  }
+
+  get activePersonnel(): number {
+    return this.employees.length;
+  }
+
+  get uniqueLocations(): number {
+    if (!this.employees.length) return 0;
+    const locations = new Set(
+      this.employees
+        .map(e => (e.address || '').trim().toLowerCase())
+        .filter(addr => addr.length > 0)
+    );
+    return locations.size || 1;
+  }
+
+  getInitials(firstName?: string, lastName?: string): string {
+    const first = (firstName || '').trim().charAt(0).toUpperCase();
+    const last = (lastName || '').trim().charAt(0).toUpperCase();
+    return `${first}${last}` || 'SP';
+  }
+
+  getAvatarColor(id: number): string {
+    const colors = [
+      'linear-gradient(135deg, #2563EB, #1D4ED8)', // Royal Blue
+      'linear-gradient(135deg, #14B8A6, #0D9488)', // Teal
+      'linear-gradient(135deg, #8B5CF6, #7C3AED)', // Purple
+      'linear-gradient(135deg, #142B4A, #1E3A63)'  // Deep Navy
+    ];
+    return colors[Math.abs(id) % colors.length];
+  }
+
   onSearchChange(): void {
+    this.applySearch();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
     this.applySearch();
   }
 
@@ -78,7 +111,9 @@ export class EmployeeListComponent implements OnInit {
     const idText = String(emp.id ?? '').toLowerCase();
     const firstName = (emp.firstName ?? '').toLowerCase();
     const lastName = (emp.lastName ?? '').toLowerCase();
-    return idText.includes(query) || firstName.includes(query) || lastName.includes(query);
+    const email = (emp.email ?? '').toLowerCase();
+    const address = (emp.address ?? '').toLowerCase();
+    return idText.includes(query) || firstName.includes(query) || lastName.includes(query) || email.includes(query) || address.includes(query);
   }
 
   private applySearch(): void {
@@ -94,7 +129,9 @@ export class EmployeeListComponent implements OnInit {
       const idText = String(emp.id ?? '').toLowerCase();
       const firstName = (emp.firstName ?? '').toLowerCase();
       const lastName = (emp.lastName ?? '').toLowerCase();
-      return idText.includes(query) || firstName.includes(query) || lastName.includes(query);
+      const email = (emp.email ?? '').toLowerCase();
+      const address = (emp.address ?? '').toLowerCase();
+      return idText.includes(query) || firstName.includes(query) || lastName.includes(query) || email.includes(query) || address.includes(query);
     });
 
     this.dataSource.data = [...this.filteredEmployees];
@@ -109,10 +146,9 @@ export class EmployeeListComponent implements OnInit {
   }
 
   deleteEmployee(id: number): void {
-    if (confirm('Are you sure you want to delete this employee?')) {
+    if (confirm('Are you sure you want to remove this employee from StaffSphere?')) {
       this.empService.deleteEmployee(id).subscribe({
         next: () => {
-          alert('Employee deleted successfully!');
           this.loadEmployees();
         },
         error: (err) => {

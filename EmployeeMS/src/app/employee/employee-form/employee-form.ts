@@ -56,7 +56,7 @@ export class EmployeeForm implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.employeeForm.valid || (this.isEditMode && this.employeeForm.get('id')?.disabled)) {
+    if (this.employeeForm.valid) {
       // Use getRawValue() to include disabled fields
       const employee: Employee = this.employeeForm.getRawValue();
       

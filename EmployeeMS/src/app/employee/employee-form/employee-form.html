@@ -1,83 +1,159 @@
-<div class="container mt-4">
-  <h2>{{ isEditMode ? 'Edit Employee' : 'Add New Employee' }}</h2>
-  
-  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="mt-4">
-    <div class="mb-3">
-      <label for="id" class="form-label">Employee ID</label>
-      <input 
-        type="number" 
-        class="form-control" 
-        id="id" 
-        formControlName="id"
-        placeholder="Enter employee ID"
-        [class.is-invalid]="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched">
-      <div class="invalid-feedback" *ngIf="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched">
-        <span *ngIf="employeeForm.get('id')?.errors?.['required']">Employee ID is required</span>
-        <span *ngIf="employeeForm.get('id')?.errors?.['min']">Employee ID must be at least 1</span>
-      </div>
-      <small class="form-text text-muted" *ngIf="isEditMode">ID cannot be changed in edit mode</small>
-    </div>
+<div class="form-page-container">
+  <!-- Back link -->
+  <div class="back-nav">
+    <a (click)="onCancel()" class="back-link">
+      <i class="bi bi-arrow-left"></i>
+      <span>Back to Employee Directory</span>
+    </a>
+  </div>
 
-    <div class="mb-3">
-      <label for="firstName" class="form-label">First Name</label>
-      <input 
-        type="text" 
-        class="form-control" 
-        id="firstName" 
-        formControlName="firstName"
-        [class.is-invalid]="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
-      <div class="invalid-feedback" *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
-        <span *ngIf="employeeForm.get('firstName')?.errors?.['required']">First name is required</span>
-        <span *ngIf="employeeForm.get('firstName')?.errors?.['minlength']">First name must be at least 2 characters</span>
+  <!-- Form Card -->
+  <div class="staff-card form-card">
+    <div class="form-header">
+      <div class="header-icon-badge" [class.edit-badge]="isEditMode">
+        <i class="bi" [class.bi-person-plus-fill]="!isEditMode" [class.bi-pencil-square]="isEditMode"></i>
+      </div>
+      <div>
+        <h2 class="form-title">{{ isEditMode ? 'Edit Employee Profile' : 'Add New Employee' }}</h2>
+        <p class="form-subtitle">
+          {{ isEditMode 
+            ? 'Update the workplace and contact information for this team member.' 
+            : 'Fill in the information below to register a new employee into StaffSphere.' 
+          }}
+        </p>
       </div>
     </div>
 
-    <div class="mb-3">
-      <label for="lastName" class="form-label">Last Name</label>
-      <input 
-        type="text" 
-        class="form-control" 
-        id="lastName" 
-        formControlName="lastName"
-        [class.is-invalid]="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
-      <div class="invalid-feedback" *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
-        <span *ngIf="employeeForm.get('lastName')?.errors?.['required']">Last name is required</span>
-        <span *ngIf="employeeForm.get('lastName')?.errors?.['minlength']">Last name must be at least 2 characters</span>
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="form-body">
+      <!-- Employee ID Field -->
+      <div class="form-field-group">
+        <label for="id" class="field-label">
+          Employee ID <span class="required-star">*</span>
+        </label>
+        <div class="input-with-icon">
+          <i class="bi bi-hash field-icon"></i>
+          <input
+            type="number"
+            class="custom-input"
+            id="id"
+            formControlName="id"
+            placeholder="e.g. 101"
+            [class.is-invalid]="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched"
+          />
+        </div>
+        <div class="invalid-feedback" *ngIf="employeeForm.get('id')?.invalid && employeeForm.get('id')?.touched">
+          <span *ngIf="employeeForm.get('id')?.errors?.['required']">Employee ID is required</span>
+          <span *ngIf="employeeForm.get('id')?.errors?.['min']">Employee ID must be at least 1</span>
+        </div>
+        <small class="field-hint" *ngIf="isEditMode">
+          <i class="bi bi-lock-fill"></i> Employee ID is permanent and cannot be modified.
+        </small>
       </div>
-    </div>
 
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
-      <input 
-        type="email" 
-        class="form-control" 
-        id="email" 
-        formControlName="email"
-        [class.is-invalid]="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
-      <div class="invalid-feedback" *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
-        <span *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required</span>
-        <span *ngIf="employeeForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+      <!-- Names Row (2 Columns) -->
+      <div class="fields-row">
+        <!-- First Name -->
+        <div class="form-field-group">
+          <label for="firstName" class="field-label">
+            First Name <span class="required-star">*</span>
+          </label>
+          <div class="input-with-icon">
+            <i class="bi bi-person field-icon"></i>
+            <input
+              type="text"
+              class="custom-input"
+              id="firstName"
+              formControlName="firstName"
+              placeholder="e.g. John"
+              [class.is-invalid]="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched"
+            />
+          </div>
+          <div class="invalid-feedback" *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
+            <span *ngIf="employeeForm.get('firstName')?.errors?.['required']">First name is required</span>
+            <span *ngIf="employeeForm.get('firstName')?.errors?.['minlength']">First name must be at least 2 characters</span>
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-field-group">
+          <label for="lastName" class="field-label">
+            Last Name <span class="required-star">*</span>
+          </label>
+          <div class="input-with-icon">
+            <i class="bi bi-person field-icon"></i>
+            <input
+              type="text"
+              class="custom-input"
+              id="lastName"
+              formControlName="lastName"
+              placeholder="e.g. Doe"
+              [class.is-invalid]="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched"
+            />
+          </div>
+          <div class="invalid-feedback" *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
+            <span *ngIf="employeeForm.get('lastName')?.errors?.['required']">Last name is required</span>
+            <span *ngIf="employeeForm.get('lastName')?.errors?.['minlength']">Last name must be at least 2 characters</span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="mb-3">
-      <label for="address" class="form-label">Address</label>
-      <textarea 
-        class="form-control" 
-        id="address" 
-        formControlName="address"
-        rows="3"
-        [class.is-invalid]="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched">
-      </textarea>
-      <div class="invalid-feedback" *ngIf="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched">
-        <span *ngIf="employeeForm.get('address')?.errors?.['required']">Address is required</span>
-        <span *ngIf="employeeForm.get('address')?.errors?.['minlength']">Address must be at least 5 characters</span>
+      <!-- Email Field -->
+      <div class="form-field-group">
+        <label for="email" class="field-label">
+          Workplace Email <span class="required-star">*</span>
+        </label>
+        <div class="input-with-icon">
+          <i class="bi bi-envelope field-icon"></i>
+          <input
+            type="email"
+            class="custom-input"
+            id="email"
+            formControlName="email"
+            placeholder="e.g. john.doe@staffsphere.com"
+            [class.is-invalid]="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched"
+          />
+        </div>
+        <div class="invalid-feedback" *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
+          <span *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="employeeForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+        </div>
       </div>
-    </div>
 
-    <div class="mt-4">
-      <button type="submit" class="btn btn-primary me-2">{{ isEditMode ? 'Update' : 'Add' }} Employee</button>
-      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-    </div>
-  </form>
+      <!-- Address / Location Field -->
+      <div class="form-field-group">
+        <label for="address" class="field-label">
+          Location / Office Address <span class="required-star">*</span>
+        </label>
+        <div class="input-with-icon-top">
+          <i class="bi bi-geo-alt field-icon-top"></i>
+          <textarea
+            class="custom-textarea"
+            id="address"
+            formControlName="address"
+            rows="3"
+            placeholder="e.g. Building 4, Tech Park, Colombo 03"
+            [class.is-invalid]="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched"
+          ></textarea>
+        </div>
+        <div class="invalid-feedback" *ngIf="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched">
+          <span *ngIf="employeeForm.get('address')?.errors?.['required']">Address is required</span>
+          <span *ngIf="employeeForm.get('address')?.errors?.['minlength']">Address must be at least 5 characters</span>
+        </div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div class="form-actions-bar">
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          <i class="bi bi-x-circle"></i>
+          <span>Cancel</span>
+        </button>
+
+        <!-- Primary Button (Royal Blue) -->
+        <button type="submit" class="btn-royal-blue">
+          <i class="bi" [class.bi-check2-circle]="isEditMode" [class.bi-person-plus-fill]="!isEditMode"></i>
+          <span>{{ isEditMode ? 'Update Profile' : 'Save Employee' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

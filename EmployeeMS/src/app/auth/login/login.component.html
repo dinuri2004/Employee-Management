@@ -1,54 +1,89 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h2>Employee Management System</h2>
-      <p class="subtitle">Sign in to continue</p>
+<div class="auth-page-container">
+  <div class="staff-card auth-card">
+    <!-- Brand Header with Circular 3-figure Teamwork Logo -->
+    <div class="auth-brand-header">
+      <div class="brand-logo-badge">
+        <svg class="staffsphere-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#0D1F36" stroke="#2563EB" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="32" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <path d="M 50 34 A 20 20 0 0 1 70 54" stroke="#2563EB" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M 68 66 A 20 20 0 0 1 32 66" stroke="#14B8A6" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M 30 54 A 20 20 0 0 1 50 34" stroke="#8B5CF6" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- Figures -->
+          <circle cx="50" cy="24" r="6.5" fill="#2563EB"/>
+          <path d="M41 42 C41 33, 59 33, 59 42 C59 47, 54 48, 50 49 C46 48, 41 47, 41 42 Z" fill="#2563EB"/>
+          <circle cx="70" cy="58" r="6.5" fill="#14B8A6"/>
+          <path d="M59 72 C64 65, 80 71, 77 79 C74 83, 67 82, 63 80 C60 77, 58 74, 59 72 Z" fill="#14B8A6"/>
+          <circle cx="30" cy="58" r="6.5" fill="#8B5CF6"/>
+          <path d="M41 72 C36 65, 20 71, 23 79 C26 83, 33 82, 37 80 C40 77, 42 74, 41 72 Z" fill="#8B5CF6"/>
+        </svg>
+      </div>
+      <h1 class="brand-title">StaffSphere</h1>
+      <p class="brand-tagline">Empowering People. Simplifying Work.</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          formControlName="username"
-          class="form-control"
-          placeholder="Enter your username"
-          [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+    <div class="auth-subheading">
+      <h2 class="auth-title">Welcome Back</h2>
+      <p class="auth-desc">Sign in to access your workforce dashboard</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Username Field -->
+      <div class="form-field-group">
+        <label for="username" class="field-label">Username</label>
+        <div class="input-with-icon">
+          <i class="bi bi-person field-icon"></i>
+          <input 
+            type="text" 
+            id="username" 
+            formControlName="username"
+            class="custom-input"
+            placeholder="Enter your username"
+            [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+        </div>
         <div class="invalid-feedback" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
           <span *ngIf="loginForm.get('username')?.errors?.['required']">Username is required</span>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          formControlName="password"
-          class="form-control"
-          placeholder="Enter your password"
-          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+      <!-- Password Field -->
+      <div class="form-field-group">
+        <div class="d-flex justify-content-between align-items-center">
+          <label for="password" class="field-label">Password</label>
+          <a routerLink="/forgot-password" class="link-royal-blue text-xs">Forgot Password?</a>
+        </div>
+        <div class="input-with-icon">
+          <i class="bi bi-lock field-icon"></i>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password"
+            class="custom-input"
+            placeholder="Enter your password"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        </div>
         <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
           <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
           <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
         </div>
       </div>
 
-      <div class="alert alert-danger" *ngIf="errorMessage">
-        {{ errorMessage }}
+      <!-- Error Message -->
+      <div class="auth-alert-danger" *ngIf="errorMessage">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMessage }}</span>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block">
-        Sign In
+      <!-- Submit Button (Royal Blue) -->
+      <button type="submit" class="btn-royal-blue btn-full mt-2">
+        <i class="bi bi-box-arrow-in-right"></i>
+        <span>Sign In to StaffSphere</span>
       </button>
 
-      <div class="forgot-password-link">
-        <a routerLink="/forgot-password">Forgot Password?</a>
-      </div>
-
-      <div class="register-link">
-        Don't have an account? <a routerLink="/register">Register here</a>
+      <!-- Register Link -->
+      <div class="auth-footer-link">
+        Don't have an account? 
+        <a routerLink="/register" class="link-royal-blue font-semibold">Create account</a>
       </div>
     </form>
   </div>
